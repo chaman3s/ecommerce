@@ -8,6 +8,7 @@ import { queryClient } from "./lib/queryClient";
 import { Header } from './componets/Header';
 function App() {
  const [isCartOpen, setIsCartOpen] = useState(false);
+ const [searchQuery, setSearchQuery] = useState("");
  const cartItemCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
  const handleSearch = (query) => {
     setSearchQuery(query);
@@ -21,7 +22,11 @@ function App() {
             onSearch={handleSearch}
           />
      </div>
-    
+    <main className="flex-1">
+      <Routes>
+        
+      </Routes>
+    </main>
    </QueryClientProvider>
  )
 }
