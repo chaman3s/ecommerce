@@ -33,7 +33,8 @@ const typeDefs = `#graphql
   type Query {
     users: [User]
     products: [Product]
-    cart: Cart        # FIXED: return ONE cart, not array
+    cart: Cart  
+    categories: [String!]!      # FIXED: return ONE cart, not array
   }
 
   # ------------------- INPUTS -------------------

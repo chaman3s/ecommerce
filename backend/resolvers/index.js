@@ -9,6 +9,11 @@ export default {
   Query: {
     users: async () => User.find(),
     products: async () => Product.find(),
+    categories: async () => {
+  const products = await Product.find({}, "category");
+  return [...new Set(products.map(p => p.category))];
+},
+    
 
     // ---------------- CART QUERY ----------------
     cart: async (_, __, { user, guestId }) => {

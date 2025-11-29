@@ -1,4 +1,3 @@
-// src/utils/jwt.js
 import jwt from "jsonwebtoken";
 
 const USER_SECRET = process.env.JWT_SECRET_USER || "usersecret";
@@ -40,4 +39,9 @@ export function verifyAdminToken(token) {
   } catch {
     return null;
   }
+}
+
+// ========== SIMPLE GENERATOR FOR NORMAL USERS ==========
+export function generateToken(user) {
+  return signUserAccess({ id: user._id, role: "user" });
 }
