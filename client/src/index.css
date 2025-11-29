@@ -1,0 +1,165 @@
+@import "tailwindcss";
+:root {
+  --background: 0 0% 100%;
+  --foreground: 0 0% 9%;
+  --border: 0 0% 89%;
+  --card: 0 0% 98%;
+  --card-foreground: 0 0% 9%;
+  --sidebar: 0 0% 96%;
+  --sidebar-foreground: 0 0% 9%;
+  --sidebar-border: 0 0% 92%;
+  --primary: 217 91% 60%;
+  --primary-foreground: 0 0% 98%;
+  --secondary: 0 0% 90%;
+  --secondary-foreground: 0 0% 9%;
+  --muted: 217 10% 88%;
+  --muted-foreground: 0 0% 45%;
+  --accent: 217 12% 90%;
+  --accent-foreground: 0 0% 9%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 98%;
+  --input: 0 0% 75%;
+  --ring: 217 91% 60%;
+
+  --font-sans: Open Sans, sans-serif;
+  --radius: .5rem;
+}
+
+.dark {
+  --background: 0 0% 7%;
+  --foreground: 0 0% 98%;
+  --border: 0 0% 18%;
+  --card: 0 0% 9%;
+  --card-foreground: 0 0% 98%;
+  --sidebar: 0 0% 11%;
+  --sidebar-foreground: 0 0% 98%;
+  --sidebar-border: 0 0% 14%;
+  --primary: 217 91% 60%;
+  --primary-foreground: 0 0% 98%;
+  --secondary: 0 0% 17%;
+  --secondary-foreground: 0 0% 98%;
+  --muted: 217 10% 19%;
+  --muted-foreground: 0 0% 65%;
+  --accent: 217 12% 18%;
+  --accent-foreground: 0 0% 98%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 98%;
+  --input: 0 0% 30%;
+  --ring: 217 91% 60%;
+}
+
+/* Utility classes using CSS variables directly */
+.bg-background {
+  background-color: var(--background);
+}
+
+.text-foreground {
+  color: var(--foreground);
+}
+
+.border-border {
+  border-color: var(--border);
+}
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+}
+
+/* ------------------------------
+   UTILITIES (very simple)
+------------------------------ */
+
+
+  /* Hide Chrome search clear button */
+  @layer utilities {
+
+  /* Hide Chrome search cancel button */
+  input[type="search"]::-webkit-search-cancel-button {
+    @apply hidden;
+  }
+
+  /* Placeholder styling for contentEditable div */
+  [contenteditable][data-placeholder]:empty::before {
+    content: attr(data-placeholder);
+    color: hsl(var(--muted-foreground));
+    pointer-events: none;
+  }
+
+  /* Escape hatches */
+  .no-default-hover-elevate {}
+  .no-default-active-elevate {}
+
+  /* ------------------------------
+     TOGGLE ELEVATION (background layer)
+  ------------------------------ */
+  .toggle-elevate::before,
+  .toggle-elevate-2::before {
+    content: "";
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    z-index: -1;
+  }
+
+  .toggle-elevate.toggle-elevated::before {
+    background-color: var(--elevate-1);
+  }
+
+  .toggle-elevate-2.toggle-elevated::before {
+    background-color: var(--elevate-2);
+  }
+
+  /* Fix overlapping borders */
+  .border.toggle-elevate::before,
+  .border.toggle-elevate-2::before {
+    inset: -1px;
+  }
+
+  /* ------------------------------
+     HOVER / ACTIVE ELEVATION (foreground layer)
+  ------------------------------ */
+  .hover-elevate:not(.no-default-hover-elevate),
+  .active-elevate:not(.no-default-active-elevate),
+  .hover-elevate-2:not(.no-default-hover-elevate),
+  .active-elevate-2:not(.no-default-active-elevate) {
+    position: relative;
+    z-index: 0;
+  }
+
+  .hover-elevate:not(.no-default-hover-elevate)::after,
+  .active-elevate:not(.no-default-active-elevate)::after,
+  .hover-elevate-2:not(.no-default-hover-elevate)::after,
+  .active-elevate-2:not(.no-default-active-elevate)::after {
+    content: "";
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    z-index: 999;
+  }
+
+  /* Hover/Active styles */
+  .hover-elevate:hover:not(.no-default-hover-elevate)::after,
+  .active-elevate:active:not(.no-default-active-elevate)::after {
+    background-color: var(--elevate-1);
+  }
+
+  .hover-elevate-2:hover:not(.no-default-hover-elevate)::after,
+  .active-elevate-2:active:not(.no-default-active-elevate)::after {
+    background-color: var(--elevate-2);
+  }
+
+  /* Fix border bleed-through */
+  .border.hover-elevate:not(.no-default-hover-elevate)::after,
+  .border.active-elevate:not(.no-default-active-elevate)::after,
+  .border.hover-elevate-2:not(.no-default-hover-elevate)::after,
+  .border.active-elevate-2:not(.no-default-active-elevate)::after {
+    inset: -1px;
+  }
+}

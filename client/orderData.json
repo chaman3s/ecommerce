@@ -1,0 +1,17 @@
+{
+  "orders": [
+    {
+      "id": "1",
+      "createdAt": "2025-01-20T10:00:00Z",
+      "status": "confirmed",
+      "total": "199.99",
+      "customerName": "John Doe",
+      "address": "123 Street Road",
+      "city": "New Delhi",
+      "zipCode": "110001",
+      "email": "john@example.com",
+      "phone": "9876543210",
+      "items": "[{\"name\":\"Laptop\",\"price\":\"199.99\",\"quantity\":1}]"
+    }
+]
+}

@@ -1,0 +1,24 @@
+[
+  {
+    "id": 1,
+    "name": "Red T-Shirt",
+    "category": "Clothing",
+    "description": "A comfortable red t-shirt.",
+    "price": "19.99",
+    "imageUrl": "https://encrypted-tbn3.gstatic.com/shopping?q=tbn:ANd9GcRyOpIFO0xMOCVASfVy8AJQHMWqXGlrUZMF6bdWxuaYcrVJvxwdBJcP_UkJk_X0z8sN49W-l2qkWF1ZZHKbTfkoancAKS4uvF-v3MhY5DA8UiOWyP59-buo",
+    "stock": 12,
+    "featured": 1
+  },
+  {
+    "id": 2,
+    "name": "Gaming Mouse",
+    "category": "Electronics",
+    "description": "High precision gaming mouse.",
+    "price": "49.99",
+    "imageUrl": "https://encrypted-tbn1.gstatic.com/shopping?q=tbn:ANd9GcQd2DKBxJ3S8n_PSNEBRUr7YTUeuYIBhYdoAR6zDvNbw4tXI88Kkn9GYQmn5wbYBVn7VUVXDeUqJvfdQHZEVuYDCdZz8nUxGM3zCBSbaTkd ",
+    "stock": 0,
+    "featured": 0
+  }
+  
+  
+]
