@@ -2,7 +2,7 @@ import { useCart } from "../lib/cartContext";
 import { Button } from "../components/ui/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/Card";
 import { Input } from "../components/ui/Input";
-import { Label } from "../components/ui/Label";
+import { Label } from "../components/ui/label";
 import { Separator } from "../components/ui/separator";
 
 import { useForm } from "react-hook-form";
