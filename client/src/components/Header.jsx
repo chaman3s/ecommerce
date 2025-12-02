@@ -7,6 +7,10 @@ import { Link } from "react-router-dom";
 import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
 import { useState } from "react";
 
+// ✅ FIXED: Apollo Client v4 import
+import { useQuery } from "@apollo/client/react";
+import { GET_CATEGORIES } from "../graphql/queries";
+
 export function Header({ onCartOpen, onSearch }) {
   const { itemCount } = useCart();
 
@@ -18,32 +22,31 @@ export function Header({ onCartOpen, onSearch }) {
     onSearch?.(searchQuery);
   };
 
-  const categories = [
-    { name: "All Products", path: "/" },
-    { name: "Audio", path: "/category/audio" },
-    { name: "Accessories", path: "/category/accessories" },
-    { name: "Gaming", path: "/category/gaming" },
-  ];
+  // -------- FETCH CATEGORIES FROM GRAPHQL --------
+  const { data,  } = useQuery(GET_CATEGORIES);
+
+  const categories =
+    data?.categories?.map((cat) => ({
+      name: cat,
+      path: `/category/${cat.toLowerCase()}`,
+    })) || [];
+
+  // Add default
+  categories.unshift({ name: "All Products", path: "/" });
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-white">
       <div className="container mx-auto px-4 lg:px-8">
         <div className="flex h-16 items-center justify-between gap-4">
-          
+
           {/* Logo */}
-          <Link
-            to="/"
-            className="flex items-center gap-2 rounded-md px-2 py-1"
-          >
+          <Link to="/" className="flex items-center gap-2 rounded-md px-2 py-1">
             <Store className="h-6 w-6 text-primary" />
             <span className="text-xl font-bold">TechStore</span>
           </Link>
 
           {/* Desktop Search */}
-          <form
-            onSubmit={handleSearch}
-            className="hidden md:flex flex-1 max-w-md mx-4"
-          >
+          <form onSubmit={handleSearch} className="hidden md:flex flex-1 max-w-md mx-4">
             <div className="relative w-full">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
@@ -58,21 +61,8 @@ export function Header({ onCartOpen, onSearch }) {
 
           {/* Icons */}
           <div className="flex items-center gap-2">
-
-            {/* Admin (Desktop) */}
-            <Link style={{display:"none"}} to="/admin">
-              <Button variant="ghost" className="hidden md:flex">
-                Admin
-              </Button>
-            </Link>
-
             {/* Cart Button */}
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={onCartOpen}
-              className="relative"
-            >
+            <Button variant="ghost" size="icon" onClick={onCartOpen} className="relative">
               <ShoppingCart className="h-5 w-5" />
               {itemCount > 0 && (
                 <Badge className="absolute -right-1 -top-1 text-xs px-1 rounded-full">
@@ -81,7 +71,7 @@ export function Header({ onCartOpen, onSearch }) {
               )}
             </Button>
 
-            {/* Mobile Menu Button */}
+            {/* Mobile Menu */}
             <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
               <SheetTrigger asChild className="md:hidden">
                 <Button variant="ghost" size="icon">
@@ -89,7 +79,6 @@ export function Header({ onCartOpen, onSearch }) {
                 </Button>
               </SheetTrigger>
 
-              {/* Mobile Menu Drawer */}
               <SheetContent side="left" className="w-64">
                 <div className="flex flex-col gap-4 mt-8">
 
@@ -103,28 +92,14 @@ export function Header({ onCartOpen, onSearch }) {
                     />
                   </form>
 
-                  {/* Menu Links */}
                   <nav className="flex flex-col gap-2">
                     {categories.map((c) => (
-                      <Link
-                        key={c.path}
-                        to={c.path}
-                        onClick={() => setMobileMenuOpen(false)}
-                      >
+                      <Link key={c.path} to={c.path} onClick={() => setMobileMenuOpen(false)}>
                         <Button variant="ghost" className="w-full justify-start">
                           {c.name}
                         </Button>
                       </Link>
                     ))}
-
-                    <Link
-                      to="/admin"
-                      onClick={() => setMobileMenuOpen(false)}
-                    >
-                      <Button variant="ghost" className="w-full justify-start">
-                        Admin Dashboard
-                      </Button>
-                    </Link>
                   </nav>
 
                 </div>
