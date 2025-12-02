@@ -10,7 +10,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../components/ui/select";
+} from "../components/ui/Select";
 
 // Load products from JSON
 import products from "../../data.json";
