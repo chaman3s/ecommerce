@@ -2,14 +2,47 @@ import { Card } from "../components/ui/Card";
 import { Label } from "../components/ui/label";
 import { Button } from "../components/ui/Button";
 import { Input } from "../components/ui/Input";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+
+// Apollo Mutation
+import { useMutation } from "@apollo/client/react";
+import { SIGNUP_MUTATION } from "../graphql/auth";
 
 export default function Signup() {
   const [name, setName] = useState("");
   const [number, setNumber] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPass, setConfirmPass] = useState("");
+  
+  const navigate = useNavigate();
+  const [signup, { loading }] = useMutation(SIGNUP_MUTATION);
+
+  // 🔥 Handle Signup
+  const handleSignup = async () => {
+    if (!name || !number || !password || !confirmPass) {
+      return alert("All fields are required");
+    }
+    if (password !== confirmPass) {
+      return alert("Passwords do not match");
+    }
+
+    try {
+      const res = await signup({
+        variables: { name, number, password },
+      });
+
+      const user = res.data.signup;
+
+      // Save user session
+      localStorage.setItem("token", user.token);
+      localStorage.setItem("userName", user.name);
+
+      navigate("/"); // redirect to home
+    } catch (err) {
+      alert(err.message);
+    }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
@@ -72,7 +105,13 @@ export default function Signup() {
 
         {/* Signup Button */}
         <div className="mt-6">
-          <Button className="w-full">Sign Up</Button>
+          <Button 
+            className="w-full" 
+            onClick={handleSignup}
+            disabled={loading}
+          >
+            {loading ? "Creating Account..." : "Sign Up"}
+          </Button>
 
           <p className="text-center text-sm text-gray-600 mt-4">
             Already have an account?{" "}

@@ -2,12 +2,38 @@ import { Card } from "../components/ui/Card";
 import { Label } from "../components/ui/label";
 import { Button } from "../components/ui/Button";
 import { Input } from "../components/ui/Input";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+
+// ⬇️ Apollo Login Mutation
+import { useMutation } from "@apollo/client/react";
+import { LOGIN_MUTATION } from "../graphql/auth";
 
 export default function Login() {
   const [number, setNumber] = useState("");
   const [password, setPassword] = useState("");
+
+  const navigate = useNavigate();
+  const [login, { loading }] = useMutation(LOGIN_MUTATION);
+
+  // 🚀 Handle Login
+  const handleLogin = async () => {
+    if (!number || !password) return alert("All fields are required");
+
+    try {
+      const res = await login({ variables: { number, password } });
+
+      const user = res.data.login;
+
+      // Save login session
+      localStorage.setItem("token", user.token);
+      localStorage.setItem("userName", user.name);
+
+      navigate("/"); // redirect to home page
+    } catch (err) {
+      alert(err.message);
+    }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
@@ -46,7 +72,13 @@ export default function Login() {
 
         {/* Footer */}
         <div className="mt-6">
-          <Button className="w-full">Login</Button>
+          <Button 
+            className="w-full"
+            onClick={handleLogin}
+            disabled={loading}
+          >
+            {loading ? "Checking..." : "Login"}
+          </Button>
 
           <p className="text-center text-sm text-gray-600 mt-4">
             Don't have an account?{" "}

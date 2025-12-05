@@ -1,11 +1,10 @@
 const typeDefs = `#graphql
-
-  type User {
-    id: ID!
-    name: String!
-    email: String!
-    token: String
-  }
+type User {
+  id: ID!
+  name: String!
+  number: String!
+  token: String
+}
 
   type Product {
     id: ID!
@@ -39,16 +38,13 @@ const typeDefs = `#graphql
   }
 
   # ------------------- INPUTS -------------------
-  input RegisterInput {
-    name: String!
-    email: String!
-    password: String!
-  }
+
 
   # ------------------- MUTATIONS -------------------
-  type Mutation {
-    register(input: RegisterInput!): User
-  }
+type Mutation {
+  signup(name: String!, number: String!, password: String!): User
+  login(number: String!, password: String!): User
+}
 
 `;
 

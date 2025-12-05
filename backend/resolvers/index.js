@@ -1,5 +1,5 @@
 // src/resolvers/index.js
-import User from "../models/User.js";
+import authResolver from "./authResolvers.js";
 import Product from "../models/Product.js";
 import Cart from "../models/Cart.js";
 import bcrypt from "bcryptjs";
@@ -7,7 +7,6 @@ import { generateToken } from "../utils/jwt.js";
 
 export default {
   Query: {
-    users: async () => User.find(),
     products: async () => Product.find(),
     categories: async () => {
   const products = await Product.find({}, "category");
@@ -65,23 +64,6 @@ export default {
   },
 
   Mutation: {
-    register: async (_, { input }) => {
-      const { name, email, password } = input;
-
-      const hashed = await bcrypt.hash(password, 10);
-
-      const user = await User.create({
-        name,
-        email,
-        password: hashed,
-      });
-
-      return {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-        token: generateToken(user),
-      };
-    }
+    ...authResolver.Mutation,
   }
 };
