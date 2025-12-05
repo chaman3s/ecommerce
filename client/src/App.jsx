@@ -11,6 +11,8 @@ import HomePage from "./pages/HomePage";
 import { CartProvider } from "./lib/cartContext";
 import { CartDrawer } from "./components/CartDrawer";
 import OrderConfirmation from "./pages/OrderConfirmation";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
 function Router() {
   const [cartOpen, setCartOpen] = useState(false);
 
@@ -21,9 +23,13 @@ function Router() {
       <main className="flex-1">
         <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route path="/category/:category" element={<HomePage />} />
           <Route path="/product/:id" element={<ProductDetail />} />
           <Route path="/checkout" element={<Checkout/>} />
           <Route path="/orderConfirmation/:id" element={<OrderConfirmation/>} />
+          <Route path="/login" element ={<Login/>}/>
+          <Route path="/signup" element ={<Signup/>}/>
+          
         </Routes>
       </main>
 

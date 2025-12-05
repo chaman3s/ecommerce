@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import { ProductCard } from "../components/ProductCard";
 import { Button } from "../components/ui/Button";
 import { Skeleton } from "../components/ui/Skeleton";
@@ -17,13 +18,17 @@ import products from "../../data.json";
 
 export default function Home() {
   // Filters
+  const { category } = useParams(); 
   const [searchQuery, setSearchQuery] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [sortBy, setSortBy] = useState("featured");
 
   // Since using JSON, no loading state needed
   const isLoading = false;
-
+useEffect(()=>{
+ if(category)setCategoryFilter(category)
+ else setCategoryFilter("all")
+},[category])
   // ---------------------------
   // Filter: Search
   // ---------------------------

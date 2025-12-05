@@ -4,5 +4,10 @@ import tailwindcss from '@tailwindcss/vite'
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(),tailwindcss()],
+  plugins: [react(), tailwindcss()],
+
+  // 🚀 This forces Vite to bundle Apollo Client fully
+  optimizeDeps: {
+    include: ["@apollo/client", "graphql"]
+  }
 })

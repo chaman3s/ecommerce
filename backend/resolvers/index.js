@@ -14,6 +14,15 @@ export default {
   return [...new Set(products.map(p => p.category))];
 },
     
+    searchProducts: async (_, { keyword }) => {
+  return Product.find({
+    $or: [
+      { name: { $regex: keyword, $options: "i" } },
+      { description: { $regex: keyword, $options: "i" } },
+      { category: { $regex: keyword, $options: "i" } },
+    ]
+  });
+},
 
     // ---------------- CART QUERY ----------------
     cart: async (_, __, { user, guestId }) => {

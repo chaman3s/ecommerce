@@ -34,7 +34,8 @@ const typeDefs = `#graphql
     users: [User]
     products: [Product]
     cart: Cart  
-    categories: [String!]!      # FIXED: return ONE cart, not array
+    categories: [String!]!  
+     searchProducts(keyword: String!): [Product]     # FIXED: return ONE cart, not array
   }
 
   # ------------------- INPUTS -------------------
