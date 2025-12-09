@@ -17,7 +17,7 @@ import {
   TruckIcon,
 } from "lucide-react";
 
-import productsData from "../../data.json";
+import productsData from "../assets/dummyData/product.json";
 import { useCart } from "../lib/cartContext";
 import { useToast } from "../hooks/useToast";
 

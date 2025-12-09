@@ -10,7 +10,7 @@ import { ApolloProvider } from "@apollo/client/react";
 import { setContext } from "@apollo/client/link/context";
 
 const httpLink = new HttpLink({
-  uri: "http://localhost:4000/graphql",
+  uri: "http://localhost:5000/graphql",
 });
 
 // 🔥 inject token before every request

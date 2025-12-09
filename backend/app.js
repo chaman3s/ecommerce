@@ -21,7 +21,6 @@ const { url } = await startStandaloneServer(server, {
     const auth = req.headers.authorization || "";
     let user = null;
 
-    // 🔥 Extract Bearer Token
     if (auth.startsWith("Bearer ")) {
       const token = auth.replace("Bearer ", "");
 

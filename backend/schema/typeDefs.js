@@ -5,13 +5,37 @@ type User {
   number: String!
   token: String
 }
+  type Dimensions {
+  width: Float
+  height: Float
+  depth: Float
+}
+type Review {
+  rating: Float!
+  comment: String
+  date: String
+  reviewerName: String
+  reviewerEmail: String
+}
 
   type Product {
     id: ID!
-    name: String!
+    title: String!
     description: String!
-    price: Float!
+    price: Float
     category: String!
+    rating: Float,
+    stock:Int,
+    weight:Float,
+    dimensions: Dimensions
+    warrantyInformation: String
+    images: [String]
+    thumbnail: String
+    reviews: [Review]
+    availabilityStatus: String
+    minimumOrderQuantity: Int
+    returnPolicy: String
+    shippingInformation: String
   }
 
   type Cart {
@@ -28,7 +52,7 @@ type User {
     product: Product!
     quantity: Int!
   }
-    type Address {
+  type Address {
     id: ID!
     name: String!
     phone: String!
@@ -47,8 +71,7 @@ type User {
     state: String
     zip: String
   }
-  
-  # ------------------- QUERIES -------------------
+
   
   type Order {
   id: ID!
@@ -78,30 +101,43 @@ type Order {
   deliveryDate: String
   totalAmount: Float
 }
-
+type CarouselItem {
+    id: ID!
+    title: String!
+    description: String!
+    image: String!
+  }
+  input CarouselInput {
+    title: String!
+    description: String!
+    image: String!
+  }
 
 
 
   type Query {
     users: [User]
-    products: [Product]
-    cart: Cart  
+    getProduct: [Product!]!
+    getProductItem(id:ID!):Product
+    getProductsByCategory(category: String!): [Product!]!
     categories: [String!]!  
-     searchProducts(keyword: String!): [Product]     # FIXED: return ONE cart, not array
+    searchProducts(keyword: String!): [Product]     # FIXED: return ONE cart, not array
+    getCarousel: [CarouselItem!]!
+    getCarouselItem(id: ID!): CarouselItem
+    cart: Cart  
   }
+  
   extend type Query {
     getAddresses: [Address!]
     getMyOrders: [Order]
   }
 
-  # ------------------- INPUTS -------------------
-
-
-  # ------------------- MUTATIONS -------------------
+ 
 type Mutation {
   signup(name: String!, number: String!, password: String!): User
   login(number: String!, password: String!): User
   placeOrder(productId: ID!, quantity: Int!): Order
+   addCarouselItem(input: CarouselInput): CarouselItem
 }
 extend type Mutation {
     addAddress(input: AddressInput!): Address!

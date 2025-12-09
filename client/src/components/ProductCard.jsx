@@ -21,8 +21,8 @@ export function ProductCard({ product }) {
 
         <div className="relative aspect-square overflow-hidden bg-muted">
           <img
-            src={product.imageUrl}
-            alt={product.name}
+            src={product.thumbnail}
+            alt={product.title}
             className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-105"
           />
 
@@ -50,7 +50,7 @@ export function ProductCard({ product }) {
             {product.category}
           </p>
 
-          <h3 className="font-semibold text-base mb-2">{product.name}</h3>
+          <h3 className="font-semibold text-base mb-2">{product.title}</h3>
 
           <p className="text-sm text-muted-foreground mb-3">
             {product.description}

@@ -6,13 +6,11 @@ import { generateToken } from "../utils/jwt.js";
 
 export default {
   Query: {
-    users: async () => User.find(),
     products: async () => Product.find(),
 
     // CART QUERY
     cart: async (_, __, { user, guestId }) => {
       let cart;
-
       if (user) {
         cart = await Cart.findOne({ userId: user.id }).populate({
           path: "items.productId",
@@ -49,26 +47,6 @@ export default {
   },
 
   Mutation: {
-    // ============= REGISTER USER =============
-    register: async (_, { input }) => {
-      const { name, email, password } = input;
-      const hashed = await bcrypt.hash(password, 10);
-
-      const user = await User.create({
-        name,
-        email,
-        password: hashed,
-      });
-
-      return {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-        token: generateToken(user),
-      };
-    },
-
-    // ============= ADD TO CART =============
     addToCart: async (_, { productId, quantity }, { user, guestId }) => {
       let cart;
 

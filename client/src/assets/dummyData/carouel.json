@@ -1,0 +1,64 @@
+
+  [
+    {
+      "id": 1,
+      "title": "Essence Mascara Lash Princess",
+      "description": "A high-definition mascara for long-lasting lash volume and bold definition.",
+      "image": "https://cdn.dummyjson.com/products/beauty/essence-mascara-lash-princess/1.webp"
+    },
+    {
+      "id": 2,
+      "title": "Acer Aspire 5 Slim Laptop",
+      "description": "Portable everyday laptop powered by Intel CPU with crisp IPS display and SSD.",
+      "image": "https://cdn.dummyjson.com/products/laptops/acer-aspire-5-slim-laptop/1.webp"
+    },
+    {
+      "id": 3,
+      "title": "Apple iPhone 13",
+      "description": "Premium smartphone with A15 Bionic chip and cinematic video recording.",
+      "image": "https://cdn.dummyjson.com/products/smartphones/apple-iphone-13/1.webp"
+    },
+    {
+      "id": 4,
+      "title": "Samsung Galaxy S21",
+      "description": "Flagship phone with 120Hz AMOLED display and professional triple-camera system.",
+      "image": "https://cdn.dummyjson.com/products/smartphones/samsung-galaxy-s21/1.webp"
+    },
+    {
+      "id": 5,
+      "title": "Nike Air Max 270",
+      "description": "Sport inspired lifestyle sneakers with lightweight cushioning and sleek design.",
+      "image": "https://cdn.dummyjson.com/products/mens-shoes/nike-air-max-270/1.webp"
+    },
+    {
+      "id": 6,
+      "title": "Wooden Study Table",
+      "description": "Smooth finish hardwood table perfect for office work or study.",
+      "image": "https://cdn.dummyjson.com/products/furniture/wooden-study-table/1.webp"
+    },
+    {
+      "id": 7,
+      "title": "Organic Green Tea Pack",
+      "description": "Pure antioxidant-rich green tea for better metabolism and freshness.",
+      "image": "https://cdn.dummyjson.com/products/groceries/organic-green-tea/1.webp"
+    },
+    {
+      "id": 8,
+      "title": "Adidas Classic Backpack",
+      "description": "Spacious lightweight backpack ideal for travel, college and daily use.",
+      "image": "https://cdn.dummyjson.com/products/bags/adidas-classic-backpack/1.webp"
+    },
+    {
+      "id": 9,
+      "title": "Sony WH-1000XM4 Headphones",
+      "description": "Industry leading ANC headphones with immersive deep bass and 30hr battery.",
+      "image": "https://cdn.dummyjson.com/products/audio/sony-wh-1000xm4/1.webp"
+    },
+    {
+      "id": 10,
+      "title": "Men’s Cotton Oversize T-Shirt",
+      "description": "Soft breathable loose fit T-shirt perfect for casual everyday comfort.",
+      "image": "https://cdn.dummyjson.com/products/mens-shirts/cotton-oversize-tee/1.webp"
+    }
+  ]
+
