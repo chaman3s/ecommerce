@@ -7,7 +7,9 @@ import addressResolver from "./addressResolver.js";
 import CarouselResolver from "./carouselResolver.js";
 import produtResolver from "./produtResolver.js";
 import cartResolvers from "./cartResolvers.js";
+import { ObjectIDResolver } from "graphql-scalars";
 export default {
+  ObjectID: ObjectIDResolver,  
   Query: {
     ...cartResolvers.Query,
     ...produtResolver.Query,

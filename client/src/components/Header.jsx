@@ -3,10 +3,11 @@ import { Button } from "./ui/Button";
 import { Badge } from "./ui/Badge";
 import { Input } from "./ui/Input";
 import { Card } from "./ui/Card";
-import { useCart } from "../lib/cartContext";
 import { Link, useNavigate } from "react-router-dom";
 import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
 import { useState } from "react";
+import { GET_CART } from "../graphql/cart";
+
 
 // Apollo Client
 import { useQuery } from "@apollo/client/react";
@@ -15,8 +16,10 @@ import { useSearch } from "../hooks/useSearch";
 
 export function Header({ onCartOpen }) {
   const navigate = useNavigate();
-  const { itemCount } = useCart();
-
+  const { data: cartData } = useQuery(GET_CART);
+  console.log("cart",cartData)
+  const itemCount  = cartData?.cart?.items?.reduce((sum, item) => sum + item.quantity, 0) || 0;
+  console.log(itemCount,":item Count")
   const [searchQuery, setSearchQuery] = useState("");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 

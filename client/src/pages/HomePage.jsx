@@ -39,11 +39,11 @@ export default function Home() {
   }, [category]);
 
 
-  // 🔥 GET CAROUSEL FROM DB
+  //  GET CAROUSEL FROM DB
   const { loading: carouselLoading, error: carouselError, data: carouselData } =
     useQuery(GET_MY_Carousel);
 
-  // 🔥 GET PRODUCTS FROM DB
+  // GET PRODUCTS FROM DB
   const {
     loading: productLoading,
     error: productError,

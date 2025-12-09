@@ -6,11 +6,12 @@ import { generateToken } from "../utils/jwt.js";
 
 export default {
   Query: {
-    products: async () => Product.find(),
 
-    // CART QUERY
+    // ===================== GET CART =====================
     cart: async (_, __, { user, guestId }) => {
       let cart;
+
+      // ================== IF USER LOGGED IN ==================
       if (user) {
         cart = await Cart.findOne({ userId: user.id }).populate({
           path: "items.productId",
@@ -28,7 +29,7 @@ export default {
         return cart;
       }
 
-      // Guest cart
+      // ================== IF GUEST CART ==================
       cart = await Cart.findOne({ guestId }).populate({
         path: "items.productId",
         model: "Product"
@@ -47,23 +48,30 @@ export default {
   },
 
   Mutation: {
+
+    // ===================== ADD TO CART =====================
     addToCart: async (_, { productId, quantity }, { user, guestId }) => {
       let cart;
 
+      // USER CART
       if (user) {
         cart = await Cart.findOne({ userId: user.id });
         if (!cart) cart = await Cart.create({ userId: user.id, items: [] });
-      } else {
+      }
+
+      // GUEST CART
+      else {
         cart = await Cart.findOne({ guestId });
         if (!cart) cart = await Cart.create({ guestId, items: [] });
       }
 
-      const existing = cart.items.find(
+      // CHECK IF PRODUCT ALREADY EXISTS
+      const existingItem = cart.items.find(
         (item) => item.productId.toString() === productId
       );
 
-      if (existing) {
-        existing.quantity += quantity;
+      if (existingItem) {
+        existingItem.quantity += quantity;
       } else {
         cart.items.push({ productId, quantity });
       }
@@ -72,15 +80,11 @@ export default {
       return cart.populate("items.productId");
     },
 
-    // ============= UPDATE CART ITEM =============
+    // ===================== UPDATE CART ITEM =====================
     updateCartItem: async (_, { productId, quantity }, { user, guestId }) => {
-      let cart;
-
-      if (user) {
-        cart = await Cart.findOne({ userId: user.id });
-      } else {
-        cart = await Cart.findOne({ guestId });
-      }
+      let cart = user
+        ? await Cart.findOne({ userId: user.id })
+        : await Cart.findOne({ guestId });
 
       if (!cart) throw new Error("Cart not found");
 
@@ -88,7 +92,7 @@ export default {
         (i) => i.productId.toString() === productId
       );
 
-      if (!item) throw new Error("Item not found in cart");
+      if (!item) throw new Error("Item not found");
 
       if (quantity <= 0) {
         cart.items = cart.items.filter(
@@ -102,15 +106,11 @@ export default {
       return cart.populate("items.productId");
     },
 
-    // ============= REMOVE CART ITEM =============
+    // ===================== REMOVE CART ITEM =====================
     removeCartItem: async (_, { productId }, { user, guestId }) => {
-      let cart;
-
-      if (user) {
-        cart = await Cart.findOne({ userId: user.id });
-      } else {
-        cart = await Cart.findOne({ guestId });
-      }
+      let cart = user
+        ? await Cart.findOne({ userId: user.id })
+        : await Cart.findOne({ guestId });
 
       if (!cart) throw new Error("Cart not found");
 
@@ -122,20 +122,17 @@ export default {
       return cart.populate("items.productId");
     },
 
-    // ============= CLEAR CART =============
+    // ===================== CLEAR CART =====================
     clearCart: async (_, __, { user, guestId }) => {
-      let cart;
-
-      if (user) {
-        cart = await Cart.findOne({ userId: user.id });
-      } else {
-        cart = await Cart.findOne({ guestId });
-      }
+      let cart = user
+        ? await Cart.findOne({ userId: user.id })
+        : await Cart.findOne({ guestId });
 
       if (!cart) return true;
 
       cart.items = [];
       await cart.save();
+
       return true;
     }
   }

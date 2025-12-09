@@ -1,8 +1,8 @@
 import Product from "../models/Product.js";
 export default {
   Query: {
-    getProduct: async () => await Product.find(),
-    getProductItem: async (_, { id }) => await Product.findById(id),
+    getProduct: async () => await Product.find().lean(),
+    getProductItem: async (_, { id }) => await Product.findById(id).lean(),
     searchProducts: async (_, { keyword }) => {
           return Product.find({
             $or: [

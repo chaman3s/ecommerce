@@ -1,3 +1,5 @@
+
+
 const typeDefs = `#graphql
 type User {
   id: ID!
@@ -17,9 +19,9 @@ type Review {
   reviewerName: String
   reviewerEmail: String
 }
-
+  scalar ObjectID
   type Product {
-    id: ID!
+   _id: ObjectID! 
     title: String!
     description: String!
     price: Float
@@ -38,20 +40,21 @@ type Review {
     shippingInformation: String
   }
 
-  type Cart {
-    id: ID!
-    userId: ID
-    guestId: String
-    items: [CartItem!]!
-    total: Float!
-    updatedAt: String
-  }
+type Cart {
+  id: ID!
+  userId: ID
+  guestId: String
+  items: [CartItem!]!
+  total: Float
+  updatedAt: String
+}
+
   
 
-  type CartItem {
-    product: Product!
-    quantity: Int!
-  }
+ type CartItem {
+  productId: Product!
+  quantity: Int!
+}
   type Address {
     id: ID!
     name: String!
@@ -117,33 +120,34 @@ type CarouselItem {
 
   type Query {
     users: [User]
+     products: [Product!]!
     getProduct: [Product!]!
-    getProductItem(id:ID!):Product
+    getProductItem(id:ObjectID!):Product
     getProductsByCategory(category: String!): [Product!]!
     categories: [String!]!  
     searchProducts(keyword: String!): [Product]     # FIXED: return ONE cart, not array
     getCarousel: [CarouselItem!]!
     getCarouselItem(id: ID!): CarouselItem
     cart: Cart  
-  }
-  
-  extend type Query {
     getAddresses: [Address!]
-    getMyOrders: [Order]
   }
 
- 
 type Mutation {
   signup(name: String!, number: String!, password: String!): User
   login(number: String!, password: String!): User
   placeOrder(productId: ID!, quantity: Int!): Order
-   addCarouselItem(input: CarouselInput): CarouselItem
+  addCarouselItem(input: CarouselInput): CarouselItem
+  addAddress(input: AddressInput!): Address!
+  updateAddress(id: ID!, input: AddressInput!): Address!
+  deleteAddress(id: ID!): String!
+  getAddresses: [Address!]
+  getMyOrders: [Order]
+  addToCart(productId: ObjectID!, quantity: Int!): Cart
+  updateCartItem(productId: ObjectID!, quantity: Int!): Cart
+  removeCartItem(productId: ObjectID!): Cart
+  clearCart: Boolean
 }
-extend type Mutation {
-    addAddress(input: AddressInput!): Address!
-    updateAddress(id: ID!, input: AddressInput!): Address!
-    deleteAddress(id: ID!): String!
-  }
+
 
 `;
  
