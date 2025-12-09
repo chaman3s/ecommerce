@@ -1,7 +1,7 @@
 import "dotenv/config";
 import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
-import connectDB from "./utils/db.js";
+import connectDB from "../utils/db.js";
 import typeDefs from "../schema/typeDefs.js";
 import resolvers from "../resolvers/index.js";
 import jwt from "jsonwebtoken";    // <-- REQUIRED
