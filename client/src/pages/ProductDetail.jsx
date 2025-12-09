@@ -1,11 +1,11 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useQuery, useMutation } from "@apollo/client/react";
+import { useQuery } from "@apollo/client/react";
 import { GET_ProductById } from "../graphql/product";
 import { ADD_TO_CART } from "../graphql/cart";
 import { Button } from "../components/ui/Button";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
-
+import { useCartGraphQL } from "../hooks/useCartGraphQL";
 export default function ProductPage() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -14,7 +14,7 @@ export default function ProductPage() {
     variables: { id }
   });
 
-  const [addToCart] = useMutation(ADD_TO_CART);
+  const {addToCart} = useCartGraphQL();
   const [adding, setAdding] = useState(false);
   const [buying, setBuying] = useState(false);
 
@@ -40,7 +40,7 @@ export default function ProductPage() {
   const handleAdd = async () => {
     setAdding(true);
     try {
-      await addToCart({ variables: { productId: product._id, quantity: 1 } });
+      await addToCart(product._id, 1); ;
     } catch (err) {
       console.error(err);
     }
@@ -50,7 +50,7 @@ export default function ProductPage() {
   const handleBuyNow = async () => {
     setBuying(true);
     try {
-      await addToCart({ variables: { productId: product._id, quantity: 1 } });
+      await addToCart(product._id, 1); 
       navigate("/checkout"); // AUTO REDIRECT
     } catch (err) {
       console.error(err);

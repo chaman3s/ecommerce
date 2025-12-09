@@ -2,38 +2,32 @@ import { useQuery, useMutation } from "@apollo/client/react";
 import { GET_CART, ADD_TO_CART, UPDATE_CART_ITEM, REMOVE_ITEM, CLEAR_CART } from "../graphql/cart";
 
 export function useCartGraphQL() {
+  const { data, loading } = useQuery(GET_CART, { fetchPolicy: "cache-and-network" });
 
-  const { data, loading, refetch } = useQuery(GET_CART);
+  const [addMutation] = useMutation(ADD_TO_CART, { refetchQueries: [GET_CART] });
+  const [updateMutation] = useMutation(UPDATE_CART_ITEM, { refetchQueries: [GET_CART] });
+  const [removeMutation] = useMutation(REMOVE_ITEM, { refetchQueries: [GET_CART] });
+  const [clearMutation] = useMutation(CLEAR_CART, { refetchQueries: [GET_CART] });
 
-  const [addMutation] = useMutation(ADD_TO_CART);
-  const [updateMutation] = useMutation(UPDATE_CART_ITEM);
-  const [removeMutation] = useMutation(REMOVE_ITEM);
-  const [clearMutation] = useMutation(CLEAR_CART);
+  const addToCart = async (productId, quantity = 1) =>
+    addMutation({ variables: { productId, quantity } }); // ⬅ FIXED FORMAT
 
-  const items = data?.cart?.items || [];
+  const updateQuantity = async (productId, quantity) =>
+    updateMutation({ variables: { productId, quantity } });
 
-  const addToCart = async (productId, quantity = 1) => {
-    await addMutation({ variables: { productId, quantity } });
-    refetch();
+  const removeFromCart = async (productId) =>
+    removeMutation({ variables: { productId } });
+
+  const clearCart = async () => clearMutation();
+
+  return {
+    items: data?.cart?.items || [],
+    loading,
+    addToCart,
+    updateQuantity,
+    removeFromCart,
+    clearCart,
+    itemCount: data?.cart?.items?.reduce((x,y)=>x+y.quantity,0) || 0,
+    total: data?.cart?.items?.reduce((x,y)=>x+y.quantity*y.productId.price,0) || 0
   };
-
-  const updateQuantity = async (productId, quantity) => {
-    await updateMutation({ variables: { productId, quantity } });
-    refetch();
-  };
-
-  const removeFromCart = async (productId) => {
-    await removeMutation({ variables: { productId } });
-    refetch();
-  };
-
-  const clearCart = async () => {
-    await clearMutation();
-    refetch();
-  };
-
-  const total = items.reduce((sum, i) => sum + (i.quantity * i.productId.price), 0);
-  const itemCount = items.reduce((sum, i) => sum + i.quantity, 0);
-
-  return { items, loading, addToCart, updateQuantity, removeFromCart, clearCart, total, itemCount };
 }
