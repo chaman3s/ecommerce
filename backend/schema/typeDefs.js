@@ -7,6 +7,24 @@ type User {
   number: String!
   token: String
 }
+type PaymentOrderResponse {
+  orderId: String!
+  orderToken: String!
+}
+type PaymentStatus {
+  orderId: String!
+  status: String!
+  amount: Float
+}
+ 
+
+type TokenStatus {
+  valid: Boolean!
+  expired: Boolean!
+  userId: ID
+  name: String
+  number: String
+}
   type Dimensions {
   width: Float
   height: Float
@@ -146,7 +164,21 @@ type Mutation {
   updateCartItem(productId: ObjectID!, quantity: Int!): Cart
   removeCartItem(productId: ObjectID!): Cart
   clearCart: Boolean
+  checkToken(token: String!): TokenStatus!
 }
+type PaymentOrderResponse {
+  orderId: String!
+  orderToken: String!
+}
+
+extend type Mutation {
+  createCashfreeOrder(amount: Float!, customerId: ID, phone: String): PaymentOrderResponse!
+}
+extend type Query {
+  verifyPayment(orderId: String!): PaymentStatus!
+}
+
+
 
 
 `;

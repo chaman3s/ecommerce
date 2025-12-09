@@ -8,6 +8,7 @@ import CarouselResolver from "./carouselResolver.js";
 import produtResolver from "./produtResolver.js";
 import cartResolvers from "./cartResolvers.js";
 import { ObjectIDResolver } from "graphql-scalars";
+import paymentResolver from "./paymentResolver.js";
 export default {
   ObjectID: ObjectIDResolver,  
   Query: {
@@ -23,6 +24,7 @@ export default {
     ...addressResolver.Mutation,
     ...orderResolver.Mutation,
     ...CarouselResolver.Mutation,
-    ...cartResolvers.Mutation
+    ...cartResolvers.Mutation,
+    ...paymentResolver.Mutation
   }
 };

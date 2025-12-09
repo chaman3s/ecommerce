@@ -1,6 +1,8 @@
 import User from "../models/User.js";
 import bcrypt from "bcryptjs";
 import { signUserAccess } from "../utils/jwt.js";
+import jwt from "jsonwebtoken";
+
 
 const authResolver = {
   Mutation: {
@@ -36,8 +38,31 @@ const authResolver = {
         number: user.number,
         token: signUserAccess({ id: user._id })
       };
+    },
+ 
+    checkToken:async (_, { token }) =>{
+      try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET_USER);
+
+        const user = await User.findById(decoded.id)
+          .select("_id name number")
+          .lean();
+
+        return {
+          valid: true,
+          expired: false,
+          userId: user?._id,
+          name: user?.name,
+          number: user?.number,
+        };
+      } catch (err) {
+        if (err.name === "TokenExpiredError") {
+          return { valid: false, expired: true };
+        }
+        return { valid: false, expired: true };
+      }
     }
   }
 };
-
+ 
 export default authResolver;

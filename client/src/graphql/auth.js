@@ -23,3 +23,15 @@ export const LOGIN_MUTATION = gql`
     }
   }
 `;
+export const CHECK_TOKEN = gql`
+  mutation CheckToken($token: String!) {
+    checkToken(token: $token) {
+      valid
+      expired
+      userId
+      name
+      number
+    }
+  }
+`;
+
