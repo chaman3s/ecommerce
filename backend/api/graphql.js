@@ -1,38 +1,34 @@
-import "dotenv/config";
-import { ApolloServer } from "@apollo/server";
-import { startStandaloneServer } from "@apollo/server/standalone";
+import { ApolloServer } from "apollo-server-micro";
 import connectDB from "../utils/db.js";
-import typeDefs from "../schema/typeDefs.js";
+import typeDefs from "../schema/index.js";
 import resolvers from "../resolvers/index.js";
-import jwt from "jsonwebtoken";    // <-- REQUIRED
 
-// Connect DB
-await connectDB();
+let dbConnected = false;
 
-const server = new ApolloServer({
-  typeDefs,
-  resolvers,
-});
-
-const { url } = await startStandaloneServer(server, {
-  listen: { port: process.env.PORT || 4000 },
-
-  context: async ({ req }) => {
-    const auth = req.headers.authorization || "";
-    let user = null;
-
-    if (auth.startsWith("Bearer ")) {
-      const token = auth.replace("Bearer ", "");
-
-      try {
-        user = jwt.verify(token, process.env.JWT_SECRET_USER || "usersecret");
-      } catch (err) {
-        console.log("Invalid Token");
-      }
-    }
-
-    return { user };  // <- now resolvers get {user}
+async function startServer() {
+  if (!dbConnected) {
+    await connectDB();
+    dbConnected = true;
+    console.log("MongoDB Connected 🌍 (Vercel)");
   }
-});
 
-console.log(`🚀 Server running at ${url}`);
+  const server = new ApolloServer({
+    typeDefs,
+    resolvers
+  });
+
+  await server.start();
+
+  return server.createHandler({
+    path: "/api/graphql",
+  });
+}
+
+export default async function handler(req, res) {
+  const graphqlHandler = await startServer();
+  return graphqlHandler(req, res);
+}
+
+export const config = {
+  api: { bodyParser: false },
+};
