@@ -24,11 +24,14 @@ export const orderTypeDefs = gql`
     createdAt:String
     updatedAt:String
   }
+  type PlaceOrderResponse {
+  orderId: String!
+  order: Order!
+}
 
   input OrderItemInput { productId:ObjectID! quantity:Int! price:Float! }
 
   input PlaceOrderInput {
-    orderId:String!
     items:[OrderItemInput!]!
     subTotal:Float!
     deliveryCharge:Float!
@@ -46,9 +49,10 @@ export const orderTypeDefs = gql`
   extend type Query {
     getMyOrders:[Order!]!
     getOrder(orderId:String!):Order
+    getOrderById(id: ID!): Order
   }
 
   extend type Mutation {
-    placeOrderAfterPayment(input:PlaceOrderInput!):Order!
+    placeOrderAfterPayment(input:PlaceOrderInput!):PlaceOrderResponse!
   }
 `;

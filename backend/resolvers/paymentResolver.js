@@ -4,17 +4,14 @@ import Order from "../models/Order.js";
 
 export default {
   Mutation: {
-    createCashfreeOrder: async (_, { amount, customerId }) => {
+    createCashfreeOrder: async (_, { amount, customerId ,orderId}) => {
       const CLIENT_ID = process.env.TEST_CLIENT_ID;
       const CLIENT_SECRET = process.env.TEST_CLIENT_SECRET;
-
-      const orderId = "order_" + Date.now();
-
       const res = await axios.post(
         "https://sandbox.cashfree.com/pg/orders",
         {
           order_id: orderId,
-          order_amount: 200,
+          order_amount: amount,
           order_currency: "INR",
           customer_details: {
             customer_id: customerId || "guest",
@@ -56,7 +53,25 @@ export default {
           }
         }
       );
+       const status = res.data.order_status;  // PAID | ACTIVE | FAILED
 
+        // 🔥 Update Order Status In DB Automatically
+        if (status === "PAID") {
+          await Order.findOneAndUpdate(
+            { orderId },
+            { paymentStatus: "Paid" }
+          );
+        } else if (status === "FAILED") {
+          await Order.findOneAndUpdate(
+            { orderId },
+            { paymentStatus: "Failed" }
+          );
+        } else {
+          await Order.findOneAndUpdate(
+            { orderId },
+            { paymentStatus: "Not Found" }
+          );
+        }
       return {
         orderId,
         status: res.data.order_status,

@@ -5,7 +5,7 @@ import { CREATE_ORDER, VERIFY_PAYMENT } from "../graphql/payment";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function Payment({ amount, userId, onSuccess }) {
+export default function Payment({ amount, userId, onSuccess ,onClk }) {
   const [createOrder] = useMutation(CREATE_ORDER);
   const [verifyPayment] = useLazyQuery(VERIFY_PAYMENT);
   const [loading, setLoading] = useState(false);
@@ -20,16 +20,24 @@ export default function Payment({ amount, userId, onSuccess }) {
     script.onerror = () => alert("❌ Cashfree SDK failed to load!");
     document.body.appendChild(script);
   }, []);
-
-  const handlePayment = async () => {
+ async function handleClick(){
+   setLoading(true);
+    let res= await onClk();
+    let orderId = res.data.placeOrderAfterPayment.orderId
+    // let orderId ="order_1765364218373";
+    console.log(orderId)
+    
+    handlePayment(orderId);
+  }
+  const handlePayment = async (order_id) => {
     if (!window.Cashfree) return alert("SDK loading... wait 1 sec");
 
     try {
-      setLoading(true);
+      
 
       // 1️⃣ Create order from backend
       const res = await createOrder({
-        variables: { amount, customerId: userId }
+        variables: { orderId:order_id, amount: Number(amount), customerId: userId  }
       });
 
       const { orderId, orderToken } = res.data.createCashfreeOrder;
@@ -73,7 +81,7 @@ export default function Payment({ amount, userId, onSuccess }) {
     <div className="mt-4 p-2 border rounded">
 
       <button
-        onClick={handlePayment}
+        onClick={ handleClick}
         disabled={loading}
         className="w-full bg-green-600 text-white p-3 rounded">
         {loading ? "Processing..." : `Pay ₹${amount}`}

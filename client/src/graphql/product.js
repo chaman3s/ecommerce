@@ -26,6 +26,7 @@ query  GetProduct ($id: ObjectID!) {
     }
 }
 `;
+
 export const GET_PRODUCTS_BY_CATEGORY = gql`
   query($category: String!) {
     getProductsByCategory(category: $category) {
@@ -38,6 +39,13 @@ export const GET_PRODUCTS_BY_CATEGORY = gql`
       category
       minimumOrderQuantity
       shippingInformation
+    }
+  }
+`;
+export const GET_PRODUCT_IMAGE = gql`
+  query GetProductImage($id: ObjectID!) {
+    getProductItem(id: $id) {
+      thumbnail
     }
   }
 `;

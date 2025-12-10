@@ -8,16 +8,17 @@ import { CheckCircle2, Package } from "lucide-react";
 import { Skeleton } from "../components/ui/Skeleton";
 
 import { GET_ORDER_BY_ID } from "../graphql/order"; // <-- NEW IMPORT
+import { stringToDate } from "../lib/utils";
 
 export default function OrderConfirmation() {
   const { id } = useParams();
 
   // Fetch order using GraphQL
   const { data, loading } = useQuery(GET_ORDER_BY_ID, {
-    variables: { id }
+    variables: { orderId: id }
   });
 
-  const order = data?.getOrderById;
+  const order = data?.getOrder;
 
   if (loading) {
     return (
@@ -74,7 +75,7 @@ export default function OrderConfirmation() {
 
                 <div>
                   <p className="text-muted-foreground mb-1">Date</p>
-                  <p>{new Date(order.createdAt).toLocaleDateString()}</p>
+                  <p>{ stringToDate(order.createdAt)}</p>
                 </div>
 
                 <div>
@@ -93,10 +94,10 @@ export default function OrderConfirmation() {
               {/* ADDRESS */}
               <h3 className="font-semibold mb-2">Shipping Address</h3>
               <p className="text-sm text-muted-foreground">
-                {order.address?.name}<br/>
-                {order.address?.street}<br/>
-                {order.address?.city}, {order.address?.state} - {order.address?.zip}<br/>
-                📞 {order.address?.phone}
+                {order.name}<br/>
+                {order.address}<br/>
+                {order.city}, - {order.zipCode}<br/>
+                📞 {order.phone}
               </p>
 
               <Separator />
@@ -106,7 +107,7 @@ export default function OrderConfirmation() {
               {order.items.map((item)=>(
                 <div key={item.productId._id} className="flex justify-between text-sm py-1">
                   <span>{item.productId.title} × {item.quantity}</span>
-                  <span className="font-medium">₹{item.productId.price * item.quantity}</span>
+
                 </div>
               ))}
 

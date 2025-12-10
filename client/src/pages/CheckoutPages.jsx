@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useQuery, useMutation } from "@apollo/client/react";
+import { useQuery, useMutation, useLazyQuery } from "@apollo/client/react";
 import { useCartGraphQL } from "../hooks/useCartGraphQL";
 import { GET_ADDRESSES } from "../graphql/address";
 import { CHECK_TOKEN } from "../graphql/auth";
@@ -11,41 +11,26 @@ import { Label } from "../components/ui/label";
 import { Separator } from "../components/ui/separator";
 import { ShoppingBag } from "lucide-react";
 import Payment from "../components/Payment";
-
-// 🟦 DELIVERY CHARGE LOGIC
-function deliveryChargeByCity(address) {
-  if (!address) return 0;
-  const city = address.city.toLowerCase();
-
-  // metro city
-  if (["delhi", "noida", "gurgaon", "ghaziabad"].includes(city)) return 25;
-  if (["mumbai", "pune", "bangalore", "bengaluru"].includes(city)) return 40;
-  return 60; 
-}
-
-// 🟦 PROMO CODE DISCOUNT
-function discountAmount(total, code) {
-  if (!code) return 0;
-  if (code.toUpperCase() === "SAVE10") return total * 0.10;
-  if (code.toUpperCase() === "FLAT50") return 50;
-  return 0;
-}
-
-// ======================================================
-// 📍 MAIN CHECKOUT PAGE
-// ======================================================
+import { GET_DELIVERY, VALIDATE_COUPON } from "../graphql/price";
+import Step from "../components/ui/Step";
+import { PLACE_ORDER_AFTER_PAYMENT } from "../graphql/order";
 export default function Checkout() {
   const navigate = useNavigate();
   const { items, total, clearCart } = useCartGraphQL();
-
+  const [delivery, setDelivery] = useState(0);
   const [activeStep, setActive] = useState(1);
   const [user, setUser] = useState(null);
   const [promo, setPromo] = useState("");
   const [appliedPromo, setAppliedPromo] = useState("");
   const [promoError, setPromoError] = useState("");
-
   const [selectedAddress, setSelectedAddress] = useState(null);
-
+  const [discount, setDiscount] = useState(0);
+   const orderItems = items.map(i=>({
+    productId:i.productId._id,
+    quantity:i.quantity,
+    price:i.productId.price
+  }));
+  //fetch value from backend
   const { data: addressData, loading: addressLoading } = useQuery(
     GET_ADDRESSES,
     {
@@ -54,83 +39,88 @@ export default function Checkout() {
     }
   );
   const addresses = addressData?.getAddresses || [];
-
+  console.log("Addresses:", addresses);
   const [checkToken] = useMutation(CHECK_TOKEN);
+  const [fetchDelivery] = useLazyQuery(GET_DELIVERY);
+  const [checkCoupon] = useLazyQuery(VALIDATE_COUPON);
+  const [placeOrderAfterPayment] = useMutation(PLACE_ORDER_AFTER_PAYMENT);
 
-  // ======================================================
-  // 🔥 CHECK TOKEN ON LOAD (REAL FLIPKART)
-  // ======================================================
+  //useEffects
   useEffect(() => {
     async function validate() {
       const token = localStorage.getItem("token");
       if (!token) return; // stay step1
-
       const { data } = await checkToken({ variables: { token } });
-
       if (!data.checkToken.valid || data.checkToken.expired) {
         localStorage.removeItem("token");
         setActive(1);
         return;
       }
-
       setUser({
         id: data.checkToken.userId,
         name: data.checkToken.name,
         phone: data.checkToken.number,
       });
-
       setActive(2);
     }
 
     validate();
   }, [checkToken]);
 
-  // =====================================================
-  // 🟩 STEP HEADER COMPONENT (Flipkart look)
-  // =====================================================
-  function Step({ step, label, active, done, right, onClick }) {
-    return (
-      <div
-        className={`flex justify-between px-4 py-3 border-b cursor-pointer
-                    ${active ? "bg-blue-50 border-blue-500" : "bg-white"}`}
-        onClick={onClick}
-      >
-        <div className="flex items-center gap-2">
-          <div
-            className={`h-6 w-6 rounded-full text-xs flex items-center justify-center font-bold
-            ${
-              done
-                ? "bg-green-600 text-white"
-                : active
-                ? "bg-blue-600 text-white"
-                : "bg-gray-300 text-gray-700"
-            }`}
-          >
-            {step}
-          </div>
-          <span
-            className={`text-sm ${
-              active || done ? "font-semibold" : "text-gray-600"
-            }`}
-          >
-            {label}
-          </span>
-        </div>
-
-        {right && <span className="text-xs text-gray-500">{right}</span>}
-      </div>
-    );
+  useEffect(() => {
+  async function load() {
+    if(!selectedAddress) return;
+    const city = chosenAddress.city;
+    
+    const res = await fetchDelivery({ variables:{ city } });
+    setDelivery(res.data.getDeliveryCharge); // result from DB
   }
+  load();
+}, [selectedAddress]);
 
+async function applyCoupon() {
+  if(!promo) return;
+  const res = await checkCoupon({
+    variables:{
+      code:promo,
+      totalAmount: total + delivery
+    }
+  });
+  const data = res.data.validateCoupon;
+  if(!data.valid){
+    setPromoError(data.message);
+    setDiscount(0);
+  } else {
+    setPromoError("");
+    setAppliedPromo(promo.toUpperCase());
+    setDiscount(data.discount);
+  }
+}
+ async function finalizeOrder(orderId){
+  let res =await placeOrderAfterPayment({
+      variables:{ input:{
+        orderId,
+        items:orderItems,
+        subTotal:total,
+        deliveryCharge:delivery,
+        discount,
+        totalAmount:payable,
+        paymentStatus:"Pending",
+
+        customerName:chosenAddress?.name,
+        address:chosenAddress?.street,
+        city:chosenAddress?.city,
+        zipCode:chosenAddress?.zip,
+        email:"buyer@mail.com",
+        phone:chosenAddress?.phone
+      }}
+    });
+return res;
+}
   // Price logic
   const chosenAddress = addresses.find((a) => a.id === selectedAddress);
-  const delivery = deliveryChargeByCity(chosenAddress);
-  const discount = discountAmount(total + delivery, appliedPromo);
   const payable = total + delivery - discount;
-
-  // ======================================================
   // 🟥 No Cart Items
-  // ======================================================
   if (items.length === 0)
     return (
       <div className="min-h-screen flex items-center justify-center text-center">
@@ -141,10 +131,8 @@ export default function Checkout() {
         </div>
       </div>
     );
+  // PAGE UI 
 
-  // ======================================================
-  // 🟦 PAGE UI (FULL)
-  // ======================================================
   return (
     <div className="min-h-screen bg-[#f1f3f6]">
       <div className="container mx-auto p-4">
@@ -301,20 +289,7 @@ export default function Checkout() {
                         value={promo}
                         onChange={(e) => setPromo(e.target.value)}
                       />
-                      <Button
-                        onClick={() => {
-                          const d = discountAmount(total + delivery, promo);
-                          if (d === 0) {
-                            setPromoError("Invalid code");
-                            setAppliedPromo("");
-                          } else {
-                            setPromoError("");
-                            setAppliedPromo(promo.toUpperCase());
-                          }
-                        }}
-                      >
-                        Apply
-                      </Button>
+                      <Button onClick={applyCoupon}> Apply</Button>
                     </div>
                     {promoError && (
                       <p className="text-xs text-red-500">{promoError}</p>
@@ -330,8 +305,9 @@ export default function Checkout() {
 
                   {/* 🔥 PAYMENT COMPONENT */}
                   <Payment
-                    amount={payable}
+                    amount={payable.toFixed(2)}
                     userId={user?.id}
+                    onClk={finalizeOrder}
                     onSuccess={() => {
                       clearCart();
                     }}
@@ -365,12 +341,10 @@ export default function Checkout() {
                     </span>
                   </div>
                 ))}
-
                 <Separator />
-
                 <div className="flex justify-between">
                   <span>Price ({items.length} items)</span>
-                  <span>₹{total}</span>
+                  <span>₹{total.toFixed(2)}</span>
                 </div>
 
                 <div className="flex justify-between">

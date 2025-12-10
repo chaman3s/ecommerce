@@ -17,6 +17,6 @@ export const paymentTypeDefs = gql`
   extend type Query { verifyPayment(orderId:String!):PaymentStatus }
 
   extend type Mutation { 
-    createCashfreeOrder(amount:Float!, customerId:ID):CreateOrderResponse!
+    createCashfreeOrder(orderId:String!,amount:Float!, customerId:ID):CreateOrderResponse!
  }
 `;

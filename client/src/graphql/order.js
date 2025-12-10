@@ -4,12 +4,14 @@ import { gql } from "@apollo/client";
 export const PLACE_ORDER_AFTER_PAYMENT = gql`
   mutation PlaceOrderAfterPayment($input: PlaceOrderInput!) {
     placeOrderAfterPayment(input: $input) {
-      id
       orderId
-      totalAmount
-      paymentStatus
-      deliveryStatus
-      createdAt
+      order {
+        id
+        totalAmount
+        paymentStatus
+        deliveryStatus
+        createdAt
+      }
     }
   }
 `;
@@ -23,13 +25,6 @@ export const GET_ORDER_BY_ID = gql`
       deliveryStatus
       createdAt
 
-      customerName
-      address
-      city
-      zipCode
-      email
-      phone
-
       items {
         quantity
         price
@@ -39,6 +34,13 @@ export const GET_ORDER_BY_ID = gql`
           thumbnail
         }
       }
+
+      customerName
+      address
+      city
+      zipCode
+      email
+      phone
     }
   }
 `;
@@ -49,8 +51,18 @@ export const GET_MY_ORDERS = gql`
       orderId
       totalAmount
       paymentStatus
+      items {
+        price
+        productId {
+          _id
+          title
+          thumbnail
+        }
+      }
+      estimatedDelivery
       deliveryStatus
       createdAt
     }
   }
 `;
+

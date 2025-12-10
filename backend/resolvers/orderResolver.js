@@ -16,15 +16,42 @@ export default {
         "items.productId"
       );
     },
+    getOrderById: async (_, { id }, { user }) => {
+
+      if (!user) throw new Error("Login Required");
+
+      const order = await Order.findById(id)
+        .populate("items.productId"); // get product details
+
+      if (!order) throw new Error("Order Not Found");
+
+      // Format into address object (because schema expects object)
+      const addressObj = {
+        name: order.customerName,
+        phone: order.phone,
+        street: order.address,
+        city: order.city,
+        state: "-",     // your DB doesn't contain state
+        zip: order.zipCode
+      };
+
+      return {
+        _id: order._id,
+        totalAmount: order.totalAmount,
+        deliveryStatus: order.deliveryStatus,
+        createdAt: order.createdAt,
+        items: order.items,
+        address: addressObj        // 👈 formatted properly
+      };
+    }
   },
 
   Mutation: {
     // called ONLY after payment success
     placeOrderAfterPayment: async (_, { input }, { user }) => {
       if (!user) throw new Error("Login required");
-
+      const orderId = "order_" + Date.now();
       const {
-        orderId,
         items,
         subTotal,
         deliveryCharge,
@@ -38,10 +65,6 @@ export default {
         email,
         phone,
       } = input;
-
-      if (paymentStatus !== "PAID") {
-        throw new Error("Payment not completed");
-      }
 
       // Optional: verify products & prices
       for (const item of items) {
@@ -58,7 +81,7 @@ export default {
         deliveryCharge,
         discount,
         totalAmount,
-        paymentStatus: "PAID",
+        paymentStatus: "Pending",
         deliveryStatus: "Processing",
         estimatedDelivery: new Date(
           Date.now() + 4 * 24 * 60 * 60 * 1000
@@ -70,8 +93,9 @@ export default {
         email,
         phone,
       });
+      console.log("order:",order)
 
-      return order;
+      return {orderId:orderId ,order};
     },
   },
 };

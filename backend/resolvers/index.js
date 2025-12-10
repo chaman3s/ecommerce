@@ -2,7 +2,7 @@ import orderResolver from "./orderResolver.js";
 import authResolver from "./authResolvers.js";
 import addressResolver from "./addressResolver.js";
 import CarouselResolver from "./carouselResolver.js";
-import produtResolver from "./produtResolver.js";
+import produtResolver from "./productResolver.js";
 import cartResolvers from "./cartResolvers.js";
 import { objectIdScalar } from "./global.scalarResolvers.js";
 import paymentResolver from "./paymentResolver.js";

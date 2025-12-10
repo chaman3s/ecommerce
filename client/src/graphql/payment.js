@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 
 export const CREATE_ORDER = gql`
-  mutation CreateCashfreeOrder($amount: Float!, $customerId: ID) {
-    createCashfreeOrder(amount: $amount, customerId: $customerId) {
+  mutation CreateCashfreeOrder($orderId:String!,$amount: Float!, $customerId: ID) {
+    createCashfreeOrder(orderId:$orderId,amount: $amount, customerId: $customerId) {
       orderId
       orderToken
     }
