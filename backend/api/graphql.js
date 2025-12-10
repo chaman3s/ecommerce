@@ -1,6 +1,6 @@
 import { ApolloServer } from "apollo-server-micro";
 import connectDB from "../utils/db.js";
-import typeDefs from "../schema/typeDefs.js";
+import typeDefs from "../typeDefs/index.js";
 import resolvers from "../resolvers/index.js";
 
 let server = null;

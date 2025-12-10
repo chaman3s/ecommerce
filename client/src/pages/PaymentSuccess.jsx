@@ -18,9 +18,8 @@ export default function PaymentSuccess() {
       const status = res.data.verifyPayment.status;
 
       if(status === "PAID"){
-        alert("🎉 PAYMENT SUCCESS");
         localStorage.removeItem("cart");
-        navigate("/orders");
+        navigate(`/orderConfirmation/${orderId}`);
       } else {
         alert("⚠ Payment Status : " + status);
       }
