@@ -1,18 +1,15 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery, useMutation } from "@apollo/client/react";
-
 import { useCartGraphQL } from "../hooks/useCartGraphQL";
 import { GET_ADDRESSES } from "../graphql/address";
 import { CHECK_TOKEN } from "../graphql/auth";
-
 import { Button } from "../components/ui/Button";
 import { Card, CardHeader, CardTitle, CardContent } from "../components/ui/Card";
 import { Input } from "../components/ui/Input";
 import { Label } from "../components/ui/label";
 import { Separator } from "../components/ui/separator";
 import { ShoppingBag } from "lucide-react";
-
 import Payment from "../components/Payment";
 
 // 🟦 DELIVERY CHARGE LOGIC
@@ -23,8 +20,7 @@ function deliveryChargeByCity(address) {
   // metro city
   if (["delhi", "noida", "gurgaon", "ghaziabad"].includes(city)) return 25;
   if (["mumbai", "pune", "bangalore", "bengaluru"].includes(city)) return 40;
-
-  return 60; // normal city
+  return 60; 
 }
 
 // 🟦 PROMO CODE DISCOUNT
