@@ -12,10 +12,16 @@ type PaymentOrderResponse {
   orderToken: String!
 }
 type PaymentStatus {
-  orderId: String!
-  status: String!
-  amount: Float
-}
+    orderId: String!
+    status: String!
+    amount: Float
+    referenceId: String   # <-- ADD THIS
+  }
+
+  type CreateOrderResponse {
+    orderId: String!
+    orderToken: String!
+  }
  
 
 type TokenStatus {
@@ -92,36 +98,6 @@ type Cart {
     state: String
     zip: String
   }
-
-  
-  type Order {
-  id: ID!
-  name: String!
-  description: String
-  price: Float!
-  imageUrl: String
-  deliveryStatus: String!
-  deliveryDate: String
-  totalAmount: Float
-}
-
-extend type Query {
-  getMyOrders: [Order]
-}
-
-extend type Mutation {
-  placeOrder(productId: ID!, quantity: Int!): Order
-}
-type Order {
-  id: ID!
-  name: String!
-  description: String
-  price: Float!
-  imageUrl: String
-  deliveryStatus: String!
-  deliveryDate: String
-  totalAmount: Float
-}
 type CarouselItem {
     id: ID!
     title: String!
@@ -133,7 +109,57 @@ type CarouselItem {
     description: String!
     image: String!
   }
+type OrderItem {
+    productId: Product!
+    quantity: Int!
+    price: Float!
+  }
+type Order {
+    id: ID!
+    orderId: String!
+    userId: ID!
+    items: [OrderItem!]!
 
+    subTotal: Float!
+    deliveryCharge: Float
+    discount: Float
+    totalAmount: Float!
+
+    paymentStatus: String!
+    deliveryStatus: String!
+    estimatedDelivery: String
+
+    customerName: String
+    address: String
+    city: String
+    zipCode: String
+    email: String
+    phone: String
+
+    createdAt: String
+    updatedAt: String
+  }
+  
+  input OrderItemInput {
+    productId: ObjectID!
+    quantity: Int!
+    price: Float!
+  }
+  input PlaceOrderInput {
+    orderId: String!          # Cashfree orderId
+    items: [OrderItemInput!]!
+    subTotal: Float!
+    deliveryCharge: Float!
+    discount: Float
+    totalAmount: Float!
+    paymentStatus: String!    # should be "PAID"
+    customerName: String
+    address: String
+    city: String
+    zipCode: String
+    email: String
+    phone: String
+  }
 
 
   type Query {
@@ -148,6 +174,10 @@ type CarouselItem {
     getCarouselItem(id: ID!): CarouselItem
     cart: Cart  
     getAddresses: [Address!]
+    verifyPayment(orderId: String!): PaymentStatus
+    getMyOrders: [Order!]!
+    getOrder(orderId: String!): Order
+
   }
 
 type Mutation {
@@ -165,18 +195,18 @@ type Mutation {
   removeCartItem(productId: ObjectID!): Cart
   clearCart: Boolean
   checkToken(token: String!): TokenStatus!
+  placeOrderAfterPayment(input: PlaceOrderInput!): Order!
 }
 type PaymentOrderResponse {
   orderId: String!
   orderToken: String!
 }
 
-extend type Mutation {
-  createCashfreeOrder(amount: Float!, customerId: ID, phone: String): PaymentOrderResponse!
-}
-extend type Query {
-  verifyPayment(orderId: String!): PaymentStatus!
-}
+ type Mutation {
+    createCashfreeOrder(amount: Float!, customerId: ID): CreateOrderResponse!
+  }
+
+
 
 
 

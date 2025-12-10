@@ -14,7 +14,7 @@ import OrderConfirmation from "./pages/OrderConfirmation";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import ProtectedRoute from "./components/ProtectedRoute";
-
+import PaymentSuccess from "./pages/PaymentSuccess"
 // New Pages you want
 import TrackOrders from "./pages/TrackOrders";
 import AddressBook from "./pages/AddressBook";
@@ -72,6 +72,7 @@ function Router() {
               </ProtectedRoute>
             }
           />
+          <Route path="/payment-success" element={<ProtectedRoute><PaymentSuccess /></ProtectedRoute>} />
 
         </Routes>
       </main>

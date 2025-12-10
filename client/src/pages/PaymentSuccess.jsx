@@ -1,0 +1,32 @@
+// 📁 src/pages/PaymentSuccess.jsx
+
+import { useSearchParams, useNavigate } from "react-router-dom";
+import { VERIFY_PAYMENT } from "../graphql/payment";
+import { useLazyQuery } from "@apollo/client/react";
+import { useEffect } from "react";
+
+export default function PaymentSuccess() {
+  const [verifyPayment] = useLazyQuery(VERIFY_PAYMENT);
+  const [params] = useSearchParams();
+  const navigate = useNavigate();
+
+  const orderId = params.get("orderId");
+
+  useEffect(() => {
+    async function check(){
+      const res = await verifyPayment({ variables:{ orderId }});
+      const status = res.data.verifyPayment.status;
+
+      if(status === "PAID"){
+        alert("🎉 PAYMENT SUCCESS");
+        localStorage.removeItem("cart");
+        navigate("/orders");
+      } else {
+        alert("⚠ Payment Status : " + status);
+      }
+    }
+    check();
+  }, []);
+
+  return <h2>⏳ Verifying payment...</h2>;
+}

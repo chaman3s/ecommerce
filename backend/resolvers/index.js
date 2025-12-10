@@ -17,6 +17,7 @@ export default {
     ...addressResolver.Query ,  
     ...orderResolver.Query,
     ...CarouselResolver.Query,
+    ...paymentResolver.Query
   },
 
   Mutation: {

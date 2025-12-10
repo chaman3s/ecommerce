@@ -1,9 +1,8 @@
-// 📌 src/components/Payment.jsx
+// 📁 src/components/Payment.jsx
 
 import { useMutation, useLazyQuery } from "@apollo/client/react";
 import { CREATE_ORDER, VERIFY_PAYMENT } from "../graphql/payment";
-import { useState } from "react";
-import { loadDropin } from "cashfree-dropjs";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function Payment({ amount, userId, onSuccess }) {
@@ -12,70 +11,74 @@ export default function Payment({ amount, userId, onSuccess }) {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  // Load v3 SDK (works)
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.src = "https://sdk.cashfree.com/js/v3/cashfree.js";
+    script.async = true;
+    script.onload = () => console.log("✔ Cashfree v3 SDK Loaded");
+    script.onerror = () => alert("❌ Cashfree SDK failed to load!");
+    document.body.appendChild(script);
+  }, []);
+
   const handlePayment = async () => {
+    if (!window.Cashfree) return alert("SDK loading... wait 1 sec");
+
     try {
       setLoading(true);
 
-      // 1️⃣ Create Order from GraphQL
-      const order = await createOrder({
-        variables: { amount, customerId: userId || null }
+      // 1️⃣ Create order from backend
+      const res = await createOrder({
+        variables: { amount, customerId: userId }
       });
 
-      const { orderId, orderToken } = order.data.createCashfreeOrder;
+      const { orderId, orderToken } = res.data.createCashfreeOrder;
+      if (!orderToken) return alert("❌ orderToken missing");
 
-      // 2️⃣ Open Cashfree Payment Popup
-      await loadDropin(
-        {
-          orderToken,
-          onSuccess: async () => {
-            await checkStatus(orderId);
-          },
-          onFailure: () => {
-            alert("❌ Payment Failed");
-          },
-        },
-        "#payment-box"
-      );
+      // 2️⃣ Initialize v3 payment
+      const cashfree = new window.Cashfree({ mode: "sandbox" }); // test mode
+
+      cashfree.checkout({
+        paymentSessionId: orderToken,
+        redirectTarget: "_self",    // redirect to payment page
+        onSuccess: () => verify(orderId),
+        onFailure: (err) => alert("❌ Payment failed: " + err.reason),
+      });
+
     } catch (err) {
-      console.error("Payment error:", err);
-      alert("Something went wrong in payment.");
+      console.log(err);
+      alert("❌ Payment creation failed");
     } finally {
       setLoading(false);
     }
   };
 
-  // 3️⃣ After payment → Verify status using GraphQL
-  async function checkStatus(orderId) {
-    const res = await verifyPayment({
-      variables: { orderId },
-      fetchPolicy: "network-only"
-    });
 
-    const status = res.data.verifyPayment.status;
+  // 3️⃣ Verify payment after completion
+  async function verify(orderId) {
+    const r = await verifyPayment({ variables:{orderId}, fetchPolicy:"no-cache" });
+    const status = r.data.verifyPayment.status;
 
-    if (status === "PAID") {
-      alert("🎉 Payment Success");
+    if(status === "PAID"){
+      alert("🎉 PAYMENT SUCCESS!");
 
-      if (onSuccess) onSuccess(); // tell parent (Checkout) to clear cart etc.
-
+      onSuccess && onSuccess(); // clear cart + place order
       navigate("/orders");
-    } else {
-      alert("❌ Payment Failed or Pending");
     }
+    else alert("⚠ Status: " + status);
   }
 
+
   return (
-    <div>
-      {/* Cashfree mounts its UI here */}
-      <div id="payment-box"></div>
+    <div className="mt-4 p-2 border rounded">
 
       <button
-        className="bg-green-600 text-white p-3 rounded mt-2 w-full"
         onClick={handlePayment}
         disabled={loading}
-      >
+        className="w-full bg-green-600 text-white p-3 rounded">
         {loading ? "Processing..." : `Pay ₹${amount}`}
       </button>
+
     </div>
   );
 }
