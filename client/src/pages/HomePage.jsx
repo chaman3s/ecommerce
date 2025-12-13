@@ -108,17 +108,11 @@ export default function Home() {
             {carouselData.getCarousel.map(slide => (
               <SwiperSlide key={slide.id}>
                 <div
-                  className="h-full w-full bg-cover bg-center relative"
+                  className="h-full w-full bg-cover bg-center relative "
                   style={{ backgroundImage: `url(${slide.image})` }}
                 >
                   <div className="absolute inset-0 bg-black/50"></div>
-                  <div className="absolute inset-0 flex items-center px-8 lg:px-20">
-                    <div className="max-w-xl text-white space-y-5">
-                      <h1 className="text-4xl md:text-6xl font-extrabold">{slide.title}</h1>
-                      <p className="text-gray-200 text-lg">{slide.description}</p>
-                      <Button size="lg">Shop Now <ArrowRight className="ml-2 h-5 w-5" /></Button>
-                    </div>
-                  </div>
+                 
                 </div>
               </SwiperSlide>
             ))}
