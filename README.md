@@ -1,5 +1,4 @@
 Full-Stack E-Commerce Application
-
 A modern, full-stack E-commerce platform built using React, Node.js, GraphQL, and Cashfree Payment Gateway.
 The application supports product browsing, cart management, secure checkout, and order tracking with a scalable GraphQL API.
 
