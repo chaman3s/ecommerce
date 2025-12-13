@@ -18,7 +18,7 @@ export default {
             customer_phone: "9999999999",
           },
           order_meta: {
-            return_url: `http://localhost:5173/payment-success?orderId=${orderId}`
+            return_url: `${process.env.redirect_url}${orderId}`,
           }
         },
         {

@@ -27,10 +27,10 @@ const authResolver = {
     // LOGIN
     login: async (_, { number, password }) => {
       const user = await User.findOne({ number });
-      if (!user) throw new Error("User not found");
+      if (!user) throw new Error("Wrong number and password");
 
       const match = await bcrypt.compare(password, user.password);
-      if (!match) throw new Error("Wrong password");
+      if (!match) throw new Error("Wrong number and password");
 
       return {
         id: user._id,
