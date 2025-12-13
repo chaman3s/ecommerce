@@ -65,7 +65,7 @@ export function Header({ onCartOpen }) {
           {/* LOGO */}
           <Link to="/" className="flex items-center gap-2">
             <Store className="h-6 w-6 text-primary" />
-            <span className="text-xl font-bold">TechStore</span>
+            <span className="text-xl font-bold">MyStore</span>
           </Link>
 
           {/* ======================== SEARCH BAR ======================== */}
