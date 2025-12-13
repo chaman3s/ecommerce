@@ -1,8 +1,10 @@
 Full-Stack E-Commerce Application
+
 A modern, full-stack E-commerce platform built using React, Node.js, GraphQL, and Cashfree Payment Gateway.
 The application supports product browsing, cart management, secure checkout, and order tracking with a scalable GraphQL API.
 
-🚀 Features
+Features
+
 🛍️ Product listing & category filtering
 🔍 Search functionality
 🛒 Shopping cart management
@@ -12,6 +14,7 @@ The application supports product browsing, cart management, secure checkout, and
 📱 Responsive UI (mobile & desktop)
 
 🏗️ Tech Stack
+
 Frontend
 React
 React Router
@@ -24,7 +27,9 @@ GraphQL (Apollo Server)
 MongoDB (Mongoose)
 Payment
 Cashfree Payment Gateway
+
 ⚙️Installation & Setup
+
 1️⃣ Clone the Repository
 git clone https://github.com/your-username/your-repo-name.git
 cd your-repo-name
