@@ -136,7 +136,7 @@ export function Header({ onCartOpen }) {
                   {userInitial || <User className="h-4 w-4" />}
                 </button>
 
-                <Card className="hidden group-hover:flex flex-col absolute right-0 mt-2 w-52 bg-white border shadow-lg rounded-md overflow-hidden z-50">
+                <Card className="hidden group-hover:flex flex-col absolute right-[-161%] mt-[2%] w-52 bg-white border shadow-lg rounded-md overflow-hidden z-50">
                   <div className="px-3 py-2 text-xs text-gray-500 border-b">
                     Signed in as
                     <div className="font-medium text-gray-800 truncate">
