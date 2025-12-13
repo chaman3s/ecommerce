@@ -1,5 +1,3 @@
-// 📁 src/pages/PaymentSuccess.jsx
-
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { VERIFY_PAYMENT } from "../graphql/payment";
 import { useLazyQuery } from "@apollo/client/react";
