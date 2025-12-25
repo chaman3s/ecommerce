@@ -18,13 +18,18 @@ import PaymentSuccess from "./pages/PaymentSuccess"
 // New Pages you want
 import TrackOrders from "./pages/TrackOrders";
 import AddressBook from "./pages/AddressBook";
-
+import { useNavigate } from "react-router-dom";
 function Router() {
+  const nav= useNavigate();
   const [cartOpen, setCartOpen] = useState(false);
 
   return (
     <div className="w-screen -ml-8 sm:w-auto sm:ml-0 min-h-screen flex flex-col -mt-7 sm:mt-0">
-      <Header onCartOpen={() => setCartOpen(true)} />
+      <Header onCartOpen={() => { const token = localStorage.getItem("token");
+    if (!token) {
+      nav("/login");
+      return
+    } setCartOpen(true)}} />
 
       <main className="flex-1">
         <Routes>

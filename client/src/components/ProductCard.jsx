@@ -5,9 +5,10 @@ import { Badge } from "./ui/Badge";
 import { Link } from "react-router-dom";
 import { useMutation } from "@apollo/client/react";
 import { ADD_TO_CART, GET_CART } from "../graphql/cart";
+import { useNavigate } from "react-router-dom";
 
 export function ProductCard({ product }) {
-
+const nav=useNavigate()
   const [addToCart, { loading }] = useMutation(ADD_TO_CART, {
     refetchQueries: [GET_CART],
   });
@@ -15,6 +16,11 @@ export function ProductCard({ product }) {
   const handleAddToCart = async (e) => {
     e.preventDefault();
     e.stopPropagation();
+    const token = localStorage.getItem("token");
+    if (!token) {
+      nav("/login");
+    }
+    
 
     try {
       await addToCart({

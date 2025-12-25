@@ -19,6 +19,7 @@ function Badge({ variant = "default", className, ...props }) {
         className
       )}
       {...props}
+    
     />
   );
 }

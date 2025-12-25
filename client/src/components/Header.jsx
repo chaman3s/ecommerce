@@ -15,7 +15,8 @@ import { useSearch } from "../hooks/useSearch";
 
 export function Header({ onCartOpen }) {
   const navigate = useNavigate();
-
+ 
+    
   // ---------------- CART ----------------
   const { data: cartData } = useQuery(GET_CART);
   const itemCount =
@@ -177,8 +178,8 @@ export function Header({ onCartOpen }) {
             {/* Cart */}
             <Button variant="ghost" size="icon" onClick={onCartOpen}>
               <ShoppingCart className="h-6 w-6" />
-              {itemCount > 0 && (
-                <Badge className="absolute top-4 right-2.5  sm:right-[82px] sm:text-[6px] text-[5px] pr-1 pl-1">
+              {token && itemCount  > 0 && (
+                <Badge className={`absolute top-4 right-2.5  sm:right-[82px] sm:text-[6px] text-[5px] pr-1 pl-1`} style={{}}>
                   {itemCount}
                 </Badge>
               )}
