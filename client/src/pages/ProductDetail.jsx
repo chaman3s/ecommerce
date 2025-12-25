@@ -79,7 +79,7 @@ export default function ProductPage() {
         </p>
 
         <p className="text-2xl font-bold text-primary">
-          ${product.price.toFixed(2)}
+          ₹{product.price.toFixed(2)}
         </p>
 
         {/* ADD TO CART BUTTON */}
