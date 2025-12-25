@@ -3,9 +3,7 @@ import { useParams } from "react-router-dom";
 import { useQuery } from "@apollo/client/react";
 import { GET_MY_Carousel } from "../graphql/carousel";
 import { GET_Product } from "../graphql/product";
-
 import { ProductCard } from "../components/ProductCard";
-import { Button } from "../components/ui/Button";
 import { Skeleton } from "../components/ui/Skeleton";
 import { Input } from "../components/ui/Input";
 import { ArrowRight, Package, Shield, TruckIcon } from "lucide-react";

@@ -53,10 +53,10 @@ export function ProductCard({ product }) {
           </div>
         </CardContent>
 
-        <CardFooter className="p-4 flex justify-between items-center">
+        <CardFooter className="p-4 flex flex-col gap-1 sm:flex-row justify-between items-center ">
           <p className="text-2xl font-bold">₹{product.price}</p>
 
-          <Button disabled={loading || product.stock === 0} onClick={handleAddToCart}>
+          <Button disabled={loading || product.stock === 0} className={"text-[8px] sm:text-base"} onClick={handleAddToCart}>
             <ShoppingCart className="h-4 w-4 mr-2" />
             {loading ? "Adding..." : "Add to Cart"}
           </Button>
